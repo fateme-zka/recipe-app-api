@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser,
                                         BaseUserManager,
                                         PermissionsMixin)
-from django.conf import settings
+from django.conf import settings  # this is a recommended way to retrieve different settings from the django settings
 
 
 class UserManager(BaseUserManager):

@@ -53,9 +53,9 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_staff)
         self.assertTrue(user.is_superuser)
 
+    # ---------------------------- tag model tests
     def test_tag_str(self):
         """Test the tag string representation"""
         tag = Tag.objects.create(user=sample_user(), name='Vegan')
 
-        self.assertEqual(str(tag), tag.name) # Tag model should return name in __str__ function
-
+        self.assertEqual(str(tag), tag.name)  # Tag model should return name in __str__ function
