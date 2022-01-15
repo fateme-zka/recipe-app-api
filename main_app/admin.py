@@ -29,3 +29,4 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Tag)  # and you don't need to specify the admin because we'll use the default one.
 admin.site.register(Ingredient)  # same as tag
+admin.site.register(Recipe)
