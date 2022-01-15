@@ -180,3 +180,52 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(ingredients.count(), 2)
         self.assertIn(ingredient1, ingredients)
         self.assertIn(ingredient2, ingredients)
+
+    # ------------------------------------------------ test updating recipe
+    # in PATCH update method only the changed fields will be updated not all fields
+    # in PUT method all fields will update, because all previous fields will be removed from that object
+    def test_partial_update_recipe(self):
+        """Test updating a recipe with PATCH"""
+        recipe = sample_recipe(user=self.user)
+        user_tag = sample_tag(user=self.user)
+        recipe.tags.add(user_tag)
+        new_tag = sample_tag(user=self.user, name='Curry')
+
+        payload = {'title': 'Chicken tikka', 'tags': new_tag.id}
+
+        url = detail_url(recipe.id)
+        self.client.patch(url, payload)
+
+        recipe.refresh_from_db()  # refreshing the recipe from the database
+
+        self.assertEqual(recipe.title, payload['title'])
+        tags = recipe.tags.all()
+        self.assertIn(new_tag, tags)
+        self.assertEqual(len(tags), 1)
+
+    def test_full_update_recipe(self):
+        """Test updating a recipe with PUT"""
+        recipe = sample_recipe(user=self.user)
+        user_tag = sample_tag(user=self.user)
+        recipe.tags.add(user_tag)
+
+        payload = {
+            'title': 'Chicken tikka',
+            'time_minutes': 24,
+            'price': 456
+        }
+
+        url = detail_url(recipe.id)
+        res = self.client.put(url, payload)
+
+        recipe.refresh_from_db()  # refreshing the recipe from the database
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(recipe.title, payload['title'])
+        self.assertEqual(recipe.price, payload['price'])
+        self.assertEqual(recipe.time_minutes, payload['time_minutes'])
+
+        tags = recipe.tags.all().count()
+        ingredients = recipe.ingredients.all().count()
+        self.assertEqual(tags, 0)
+        self.assertEqual(ingredients, 0)
