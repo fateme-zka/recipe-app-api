@@ -1,8 +1,19 @@
+import uuid
+import os
+
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser,
                                         BaseUserManager,
                                         PermissionsMixin)
 from django.conf import settings  # this is a recommended way to retrieve different settings from the django settings
+
+
+def recipe_image_file_path(instance, filename):
+    """Generate file path for the new recipe image that was uploaded"""
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+
+    return os.path.join('uploads/recipe/', filename)
 
 
 class UserManager(BaseUserManager):
@@ -69,6 +80,9 @@ class Recipe(models.Model):
     link = models.CharField(max_length=255, blank=True)  # link of the recipe if it's stored online
     ingredients = models.ManyToManyField('Ingredient')
     tags = models.ManyToManyField('Tag')
+
+    # we don't put () at the end of the function because we just want to reference to this function
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
 
     def __str__(self):
         return self.title
