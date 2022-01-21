@@ -40,9 +40,11 @@ class RecipeSerializer(serializers.ModelSerializer):
             'tags',
             'time_minutes',
             'price',
-            'link'
+            'link',
+            'image'
         )
-        read_only_fields = ('id',)  # just prevent the user from updating the id when they may create or edit request
+        read_only_fields = ('id', 'image')
+        # just prevent the user from updating the id when they may create or edit request
 
 
 class RecipeDetailSerializer(RecipeSerializer):
